@@ -486,3 +486,47 @@ e2e-tkgctl-vc67: $(GINKGO) generate-embedproviders ## Run ginkgo tkgctl E2E test
 .PHONY: e2e-tkgpackageclient-docker
 e2e-tkgpackageclient-docker: $(GINKGO) generate-embedproviders ## Run ginkgo tkgpackageclient E2E tests
 	$(GINKGO) -v -trace -nodes=$(GINKGO_NODES) --noColor=$(GINKGO_NOCOLOR) $(GINKGO_ARGS) -tags embedproviders pkg/v1/tkg/test/tkgpackageclient
+
+
+##### PACKAGE OPERATIONS #####
+OCI_REGISTRY := projects.registry.vmware.com/tanzu_framework
+PACKAGING_REQUIRED_BINARIES := imgpkg kbld ytt vendir
+
+check-carvel:
+	# TODO: install these binaries as part of tools target
+	$(foreach exec,$(PACKAGING_REQUIRED_BINARIES),\
+		$(if $(shell which $(exec)),,$(error "'$(exec)' not found. Carvel toolset is required. See instructions at https://carvel.dev/#install")))
+
+.PHONY: create-package
+create-package: # Stub out new package directories and manifests. Usage: make create-package NAME=foobar VERSION=10.0.0
+	@hack/packages/create-package.sh $(NAME) $(VERSION)
+
+vendir-sync-package: check-carvel # Performs a `vendir sync` for a package. Usage: make vendir-package-sync PACKAGE=foobar VERSION=1.0.0
+	@printf "\n===> syncing $${PACKAGE}/$${VERSION}\n";\
+	cd packaging/packages/$${PACKAGE}/$${VERSION}/bundle && vendir sync >> /dev/null;\
+
+lock-package-images: check-carvel # Updates the image lock file for a package. Usage: make lock-package-images PACKAGE=foobar VERSION=1.0.0
+	@printf "\n===> Updating image lockfile for package $${PACKAGE}/$${VERSION}\n";\
+	cd packaging/packages/$${PACKAGE}/$${VERSION} && kbld --file bundle --imgpkg-lock-output bundle/.imgpkg/images.yml >> /dev/null;\
+
+push-package: check-carvel # Build and push a package template. Tag will default to `latest`. Usage: make push-package PACKAGE=foobar VERSION=1.0.0
+	@printf "\n===> pushing $${PACKAGE}/$${VERSION}\n";\
+	cd packaging/packages/$${PACKAGE}/$${VERSION} && imgpkg push --bundle $(OCI_REGISTRY)/$${PACKAGE}:$${VERSION} --file bundle/;\
+
+export CHANNEL
+generate-package-repo: check-carvel # Generate and push the package repository. Usage: make generate-package-repo CHANNEL=main
+	cd ./hack/packages/ && $(MAKE) run
+
+get-package-config: # Extracts the package values.yaml file. Usage: make get-package-config PACKAGE=foo VERSION=1.0.0
+	TEMP_DIR=`mktemp -d` \
+	&& imgpkg pull --bundle ${OCI_REGISTRY}/$${PACKAGE}:$${VERSION} -o $${TEMP_DIR} \
+	&& cp $${TEMP_DIR}/config/values.yaml ./$${PACKAGE}-$${VERSION}-values.yaml \
+	&& rm -rf $${TEMP_DIR}
+
+test-packages-unit: check-carvel
+	$(GO) test -coverprofile cover.out -v `go list ./... | grep github.com/vmware-tanzu/tanzu-framework/packaging/packages | grep -v e2e`
+
+create-repo: # Usage: make create-repo NAME=my-repo
+	cp hack/packages/templates/repo.yaml packaging/repos/${NAME}.yaml
+
+##### PACKAGE OPERATIONS #####
