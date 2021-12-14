@@ -1,0 +1,8 @@
+apiVersion: app.tanzu.vmware.com/v1alpha1
+kind: Lookup
+metadata:
+  name: lookup-sample
+  namespace: tkg-system
+spec:
+  # Add fields here
+  foo: bar

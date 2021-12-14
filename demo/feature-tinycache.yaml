@@ -1,0 +1,11 @@
+---
+apiVersion: config.tanzu.vmware.com/v1alpha1
+kind: Feature
+metadata:
+  name: tinycache
+spec:
+  activated: false
+  description: A tiny cache for TKG
+  discoverable: true
+  immutable: false
+  maturity: alpha

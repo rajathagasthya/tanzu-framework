@@ -1,0 +1,20 @@
+# permissions for end users to view lookups.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: lookup-viewer-role
+rules:
+- apiGroups:
+  - app.tanzu.vmware.com
+  resources:
+  - lookups
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - app.tanzu.vmware.com
+  resources:
+  - lookups/status
+  verbs:
+  - get

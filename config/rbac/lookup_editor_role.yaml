@@ -1,0 +1,24 @@
+# permissions for end users to edit lookups.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: lookup-editor-role
+rules:
+- apiGroups:
+  - app.tanzu.vmware.com
+  resources:
+  - lookups
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - app.tanzu.vmware.com
+  resources:
+  - lookups/status
+  verbs:
+  - get
