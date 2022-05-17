@@ -80,7 +80,7 @@ require (
 	github.com/spf13/afero v1.6.0
 	github.com/spf13/cobra v1.4.0
 	github.com/spf13/pflag v1.0.5
-	github.com/spf13/viper v1.10.0
+	github.com/spf13/viper v1.10.1
 	github.com/stretchr/testify v1.7.1-0.20210427113832-6241f9ab9942
 	github.com/tj/assert v0.0.0-20171129193455-018094318fb0
 	github.com/vmware-tanzu/carvel-kapp-controller v0.25.0
@@ -96,7 +96,7 @@ require (
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211
 	gomodules.xyz/jsonpatch/v2 v2.2.0
-	google.golang.org/api v0.62.0
+	google.golang.org/api v0.63.0
 	google.golang.org/grpc v1.44.0
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
@@ -110,8 +110,8 @@ require (
 	sigs.k8s.io/cluster-api v1.1.3
 	sigs.k8s.io/cluster-api-provider-aws v1.1.0
 	sigs.k8s.io/cluster-api-provider-azure v1.0.1
-	sigs.k8s.io/cluster-api-provider-vsphere v1.1.0
-	sigs.k8s.io/cluster-api/test v1.1.1
+	sigs.k8s.io/cluster-api-provider-vsphere v1.2.0
+	sigs.k8s.io/cluster-api/test v1.1.3
 	sigs.k8s.io/controller-runtime v0.11.1
 	sigs.k8s.io/controller-tools v0.7.0
 	sigs.k8s.io/kind v0.11.1
